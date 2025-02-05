@@ -1,0 +1,37 @@
+Как вариант, если у Вас есть systemd
+
+sudo nano /etc/systemd/system/<your_bot_name>.service
+Туда копируете вот такой текст заменив текст в <> на ваши параметры:
+
+[Unit]
+Description=GPUtraceServer
+After=network.target
+
+[Service]
+Type=simple
+User=server
+Group=server
+
+Environment=PYTHONPATH=/var/www/html/GPUtraceServer
+WorkingDirectory=/var/www/html/GPUtraceServer
+ExecStart=/usr/bin/python3 /var/www/html/GPUtraceServer/GPUtracePyton.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=network.target
+
+
+Далее: Ctrl+X, y для сохранения файла юнита который только что создали
+
+Затем
+
+sudo systemctl daemon-reload
+sudo systemctl start <your_bot_name>.service
+sudo systemctl status <your_bot_name>.service
+# если все норм и юнит запустился...
+sudo systemctl enable <your_bot_name>.service
+
+sudo systemctl stop dummy.service          #Для остановки сервиса 
+sudo systemctl start dummy.service         #Для запуска сервиса
+sudo systemctl restart dummy.service       #Для перезапуска сервиса
