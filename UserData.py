@@ -17,13 +17,17 @@ def GetUserData():
 
                 if (Parameters.ParamExist(token)):
                     ind = Parameters.GetParamIndex(token)
-                    Parameters.Params[ind].checkDate = datetime.strptime(result[0], '%Y-%m-%d %H:%M:%S') #2022-05-24 15:16:34
-                    Parameters.Params[ind].gputemp = float(result[1])
-                    Parameters.Params[ind].gpulim = float(result[2])
-                    Parameters.Params[ind].memtemp = float(result[3])
-                    Parameters.Params[ind].memlim = float(result[4])
-    except :
-        AddToLog(f'Ошибка при попытке чтения данных пользователя.')
+                    readDate = datetime.strptime(result[0], '%Y-%m-%d %H:%M:%S') #2022-05-24 15:16:34
+                    if Parameters.Params[ind].checkDate != readDate:
+                        Parameters.Params[ind].checkDate = readDate
+                        Parameters.Params[ind].gputemp = float(result[1])
+                        if (len(result[2]) > 1): Parameters.Params[ind].gpulim = float(result[2])
+                        Parameters.Params[ind].memtemp = float(result[3])
+                        if (len(result[4]) > 1): 
+                            Parameters.Params[ind].memlim = float(result[4])
+                            Parameters.SaveParamList()
+    except Exception as e:
+        Log.AddToLog(f'Ошибка при попытке чтения данных пользователя. {e}')
     
 
 def CheckUserDataSize():
